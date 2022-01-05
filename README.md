@@ -27,6 +27,16 @@ toolkit.listCalcs()
 toolkit.calculate(None, None)
 ```
 
+### Testing
+
+The unittest module can be used from the command line to run tests from modules, classes or even individual test methods:
+
+```
+python -m unittest tests.test_toolkit.TestToolkit
+python -m unittest tests.test_toolkit.TestToolkit.test_calc_list
+python -m unittest tests.test_toolkit.TestToolkit.test_calculate
+```
+
 ### Updating Package
 
 https://packaging.python.org/en/latest/tutorials/packaging-projects/

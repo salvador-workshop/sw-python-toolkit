@@ -11,12 +11,13 @@ class SWToolkit:
       self.add('test1', 'Test Calculator 1', TestCalc1(), TestAdapter1())
       self.add('test2', 'Test Calculator 2', TestCalc2(), TestAdapter2())
 
-
     def add(self, calc_id, calc_desc, calculator, adapter):
-        return 'hello from SWToolkit.add()'
+        newCalc = {'id': calc_id, 'desc': calc_desc, 'calculator': calculator, 'adapter': adapter}
+        self.calculators.append(newCalc)
+        return 0
 
     def calculate(self, calculator, swtInput):
-        return 'hello from SWToolkit.calculate()'
+        return self.calculators[0].calculator.calculate(swtInput)
 
     def listCalcs(self, calculator, swtInput):
         return 'hello from SWToolkit.listCalcs()'
