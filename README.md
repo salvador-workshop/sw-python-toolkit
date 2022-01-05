@@ -20,11 +20,13 @@ TEST PACKAGE (TestPyPI)
 Simple test file:
 
 ```python
-from sw_dtoolkit import toolkit
+from sw_dtoolkit.toolkit import SWDToolkit
+
+toolkit = SWDToolkit()
 
 toolkit.listCalcs()
 
-toolkit.calculate(None, None)
+toolkit.calculate('test1', None)
 ```
 
 ### Testing

@@ -4,5 +4,5 @@ class TestCalculator2:
       self.inputFields = []
       self.outputFields = []
 
-    def calculate(self):
+    def calculate(self, swt_input):
         return 'hello from TestCalculator2.calculate()'

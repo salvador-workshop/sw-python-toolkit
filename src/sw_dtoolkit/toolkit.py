@@ -1,23 +1,29 @@
-from calculators.TestCalc1 import TestCalc1
-from calculators.TestCalc2 import TestCalc2
-from calculators.TestAdapter1 import TestAdapter1
-from calculators.TestAdapter2 import TestAdapter2
+from .calculators.test_calculator_1 import TestCalculator1
+from .calculators.test_calculator_2 import TestCalculator2
+from .adapters.test_adapter_1 import TestAdapter1
+from .adapters.test_adapter_2 import TestAdapter2
 
-class SWToolkit:
+class SWDToolkit:
     def __init__(self):
       self.data = []
-      self.calculators = []
 
-      self.add('test1', 'Test Calculator 1', TestCalc1(), TestAdapter1())
-      self.add('test2', 'Test Calculator 2', TestCalc2(), TestAdapter2())
+      self.calc_test1 = TestCalculator1()
+      self.calc_test2 = TestCalculator2()
 
-    def add(self, calc_id, calc_desc, calculator, adapter):
-        newCalc = {'id': calc_id, 'desc': calc_desc, 'calculator': calculator, 'adapter': adapter}
-        self.calculators.append(newCalc)
-        return 0
+      self.adpt_test1 = TestAdapter1()
+      self.adpt_test2 = TestAdapter2()
 
-    def calculate(self, calculator, swtInput):
-        return self.calculators[0].calculator.calculate(swtInput)
+    def __findCalculator(self, calculator_id):
+        if calculator_id == 'test1':
+            return self.calc_test1
+        elif calculator_id == 'test2':
+            return self.calc_test2
+        else:
+            return None
 
-    def listCalcs(self, calculator, swtInput):
-        return 'hello from SWToolkit.listCalcs()'
+    def calculate(self, calc_id, swt_input):
+        target_calc = self.__findCalculator(calc_id)
+        return target_calc.calculate(swt_input)
+
+    def listCalcs(self):
+        return 'hello from SWDToolkit.listCalcs()'
