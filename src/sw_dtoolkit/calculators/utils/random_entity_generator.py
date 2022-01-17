@@ -1,6 +1,8 @@
-import random
+import random, os
 from random import randrange
 from datetime import datetime, timedelta
+
+current_dir = os.path.dirname(os.path.abspath(__file__))
 
 class RandomEntityGenerator:
     def __init__(self):
@@ -29,28 +31,34 @@ class RandomEntityGenerator:
         #     + random_music_genres(num_genres)
         #     + random_music_album(num_tracks)
 
-    def random_line_from_file(self, afile, default=None):
+    def __random_line_from_file(self, afile, default=None):
         line = default
+        afile.seek(0)
         for i, aline in enumerate(afile, start=1):
             if randrange(i) == 0:  # random int [0..i)
                 line = aline
         return line.rstrip()
 
-    def random_num_string(self):
+    def __random_num_string(self):
         r_num = random.randint(1, 9999)
         return f'{r_num:04}'
 
     def random_person(self):
-        pName = random_line(personNames).rstrip()
-        pPhone = f'{random_num_string()}-{random_num_string()}{random_num_string()}'
-        return f'{pName}\n{pPhone}'
+        data_path = os.path.join(current_dir, "../data/business-names.txt")
+        personNames = open(data_path, "r", encoding='utf-8')
+        pName = self.__random_line_from_file(personNames).rstrip()
+        pPhone = f'{self.__random_num_string()}-{self.__random_num_string()}{self.__random_num_string()}'
+        return_val = f'{pName}\n{pPhone}'
+        personNames.close()
+        return return_val
+
 
     def random_address(self):
         addr_num = random.randint(1, 3999)
-        addr_street = random_line(streetNames).rstrip()
-        addr_city = random_line(cityNames).rstrip()
-        addr_country = random_line(countryNames).rstrip()
-        addr_phone = f'{random_num_string()}-{random_num_string()}{random_num_string()}'
+        addr_street = self.__random_line_from_file(streetNames).rstrip()
+        addr_city = self.__random_line_from_file(cityNames).rstrip()
+        addr_country = self.__random_line_from_file(countryNames).rstrip()
+        addr_phone = f'{self.__random_num_string()}-{self.__random_num_string()}{self.__random_num_string()}'
 
         random_address = f'{addrNum} {addrStreet}\n{addrCity}, {addrCountry}\n{addrPhone}'
         return random_address
@@ -66,14 +74,18 @@ class RandomEntityGenerator:
         return start_date + timedelta(seconds=random_second)
 
     def random_business_name(self):
-        return None
+        data_path = os.path.join(current_dir, "../data/business-names.txt")
+        businessNames = open(data_path, "r", encoding='utf-8')
+        return_val = self.__random_line_from_file(businessNames)
+        businessNames.close()
+        return return_val
 
     def random_business_industries(self, num_industries):
         for x in range(num_industries):
             business_industry_list.seek(0)
-            bus_industries += f'- {random_line(business_industry_list).rstrip()}\n'
+            bus_industries += f'- {self.__random_line_from_file(business_industry_list).rstrip()}\n'
         loopStr += f'{bus_industries}\n'
-        return loopStr;
+        return loopStr
 
     def random_music_act(self):
         return None
