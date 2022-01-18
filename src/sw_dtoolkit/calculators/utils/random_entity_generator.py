@@ -8,29 +8,6 @@ class RandomEntityGenerator:
     def __init__(self):
         self.data = []
 
-        # self.bandNames = open("../data/band-names.txt", "r", encoding='utf-8')
-        # self.albumNames = open("../data/album-names.txt", "r", encoding='utf-8')
-        # self.cityNames = open("../data/city-names.txt", "r", encoding='utf-8')
-        # self.countryNames = open("../data/country-names.txt", "r", encoding='utf-8')
-        # self.genreNames = open("../data/genre-list.txt", "r", encoding='utf-8')
-        # self.businessNames = open("../data/business-names.txt", "r", encoding='utf-8')
-        # self.businessIndustryList = open("../data/business-industry-list.txt", "r", encoding='utf-8')
-        # self.countryCodes = open("../data/country-codes.txt", "r", encoding='utf-8')
-        # self.streetNames = open("../data/street-names.txt", "r", encoding='utf-8')
-        # self.personNames = open("../data/person-names.txt", "r", encoding='utf-8')
-
-        # TODO -- reorganize "gd-name-gen" code into generalized funcs
-        # usable by several calculators
-        #     + random_line_from_file(file_path)
-        #     + random_person()
-        #     + random_address()
-        #     + random_datetime(start_date, end_date)
-        #     + random_business_name()
-        #     + random_business_industries(num_industries)
-        #     + random_music_act()
-        #     + random_music_genres(num_genres)
-        #     + random_music_album(num_tracks)
-
     def __random_line_from_file(self, afile, default=None):
         line = default
         afile.seek(0)
@@ -44,7 +21,7 @@ class RandomEntityGenerator:
         return f'{r_num:04}'
 
     def random_person(self):
-        data_path = os.path.join(current_dir, "../data/business-names.txt")
+        data_path = os.path.join(current_dir, "../data/person-names.txt")
         personNames = open(data_path, "r", encoding='utf-8')
         pName = self.__random_line_from_file(personNames).rstrip()
         pPhone = f'{self.__random_num_string()}-{self.__random_num_string()}{self.__random_num_string()}'
@@ -54,13 +31,23 @@ class RandomEntityGenerator:
 
 
     def random_address(self):
-        addr_num = random.randint(1, 3999)
-        addr_street = self.__random_line_from_file(streetNames).rstrip()
-        addr_city = self.__random_line_from_file(cityNames).rstrip()
-        addr_country = self.__random_line_from_file(countryNames).rstrip()
-        addr_phone = f'{self.__random_num_string()}-{self.__random_num_string()}{self.__random_num_string()}'
+        data_path = os.path.join(current_dir, "../data/country-names.txt")
+        country_names = open(data_path, "r", encoding='utf-8')
+        data_path = os.path.join(current_dir, "../data/city-names.txt")
+        city_names = open(data_path, "r", encoding='utf-8')
+        data_path = os.path.join(current_dir, "../data/street-names.txt")
+        street_names = open(data_path, "r", encoding='utf-8')
 
-        random_address = f'{addrNum} {addrStreet}\n{addrCity}, {addrCountry}\n{addrPhone}'
+        addr_num = random.randint(1, 3999)
+        addr_country = self.__random_line_from_file(country_names).rstrip()
+        addr_city = self.__random_line_from_file(city_names).rstrip()
+        addr_street = self.__random_line_from_file(street_names).rstrip()
+        addr_phone = f'{self.__random_num_string()}-{self.__random_num_string()}{self.__random_num_string()}'
+        random_address = f'{addr_num} {addr_street}\n{addr_city}, {addr_country}\n{addr_phone}'
+
+        country_names.close()
+        city_names.close()
+        street_names.close()
         return random_address
 
     def random_datetime(self, start_date, end_date):
@@ -81,17 +68,70 @@ class RandomEntityGenerator:
         return return_val
 
     def random_business_industries(self, num_industries):
+        data_path = os.path.join(current_dir, "../data/business-industry-list.txt")
+        business_industries = open(data_path, "r", encoding='utf-8')
+        bus_industries = ''
         for x in range(num_industries):
-            business_industry_list.seek(0)
-            bus_industries += f'- {self.__random_line_from_file(business_industry_list).rstrip()}\n'
-        loopStr += f'{bus_industries}\n'
-        return loopStr
-
-    def random_music_act(self):
-        return None
+            bus_industries += f'- {self.__random_line_from_file(business_industries).rstrip()}\n'
+        return_val = f'{bus_industries}\n'
+        business_industries.close()
+        return return_val
 
     def random_music_genres(self, num_genres):
-        return None
+        data_path = os.path.join(current_dir, "../data/genre-list.txt")
+        genre_list = open(data_path, "r", encoding='utf-8')
+        mus_genres = ''
+        for x in range(num_genres):
+            mus_genres += f'- {self.__random_line_from_file(genre_list).rstrip()}\n'
+        return_val = f'{mus_genres}\n'
+        genre_list.close()
+        return return_val
+
+    def random_music_act(self):
+        m_genres = self.random_music_genres(3)
+
+        data_path = os.path.join(current_dir, "../data/band-names.txt")
+        band_names = open(data_path, "r", encoding='utf-8')
+
+        band_name = self.__random_line_from_file(band_names)
+        label_name = self.__random_line_from_file(band_names)
+
+        band_names.close()
+        return f'ARTIST(S): {band_name}\nGENRES: {m_genres}\nLABEL: {label_name}'
 
     def random_music_album(self, num_tracks):
+        random_act = self.random_music_act()
+
+        data_path = os.path.join(current_dir, "../data/band-names.txt")
+        band_names = open(data_path, "r", encoding='utf-8')
+        band_name = self.__random_line_from_file(band_names)
+
+        tracklist_str = 'TRACKLIST:\n'
+        for x in range(num_tracks):
+            track_name = self.__random_line_from_file(band_names)
+            track_num = x + 1
+            track_minutes = random.randint(0,8)
+            track_secs = random.randint(0,59)
+            
+            tracklist_str += f'{track_num:02} - {track_name} ({track_minutes}:{track_secs:02})\n'
+
+        band_names.close()
+
+        return f'{random_act}\n{tracklist_str}'
+
+    def random_music_tour(self, num_stops):
+        # tNames = random_line(bandNames).rstrip()
+        # tNames += f' -OR- {random_line(albumNames).rstrip()}'
+        # loopStr += f'\nTOUR NAME:\n{tNames}\n'
+
+        # loopStr += '\nTOUR STOPS: \n'
+        # numCities = random.randint(6,20)
+        # tourStart = datetime.strptime('1/1/2032 1:30 PM', '%m/%d/%Y %I:%M %p')
+        # tourEnd = datetime.strptime('12/30/2099 4:50 AM', '%m/%d/%Y %I:%M %p')
+
+        # for x in range(numCities):
+        #     cityNames.seek(0)
+        #     countryNames.seek(0)
+        #     eventDay = random_date(tourStart, tourEnd).strftime("%b %d, %Y")
+        #     loopStr += f'{eventDay} - {random_line(cityNames).rstrip()}, {random_line(countryNames).rstrip()}\n'
         return None
